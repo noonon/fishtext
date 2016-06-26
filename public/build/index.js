@@ -68,18 +68,11 @@
 	 */
 
 
-	var Hello = _react2.default.createClass({
-	    displayName: 'Hello',
-	    render: function render() {
-	        return _react2.default.createElement(
-	            'h1',
-	            null,
-	            'Hello'
-	        );
-	    }
-	});
+	__webpack_require__(169);
 
-	_reactDom2.default.render(_react2.default.createElement(Hello, null), document.querySelector('.container'));
+	var MainComponent = __webpack_require__(175)(_react2.default);
+
+	_reactDom2.default.render(_react2.default.createElement(MainComponent, null), document.querySelector('.container'));
 
 /***/ },
 /* 2 */
@@ -20353,6 +20346,767 @@
 	var ReactMount = __webpack_require__(161);
 
 	module.exports = ReactMount.renderSubtreeIntoContainer;
+
+/***/ },
+/* 169 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(170);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(174)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/stylus-loader/index.js!./index.styl", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/stylus-loader/index.js!./index.styl");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 170 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(171)();
+	// imports
+
+
+	// module
+	exports.push([module.id, "@font-face {\n  font-family: \"RobotoLight\";\n  src: url(" + __webpack_require__(172) + ") format(\"truetype\");\n  font-style: normal;\n  font-weight: normal;\n}\n@font-face {\n  font-family: \"RobotoMedium\";\n  src: url(" + __webpack_require__(173) + ") format(\"truetype\");\n  font-style: normal;\n  font-weight: normal;\n}\nhtml,\nbody,\n.container {\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  background-color: #d1d1d1;\n}\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 171 */
+/***/ function(module, exports) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	// css base code, injected by the css-loader
+	module.exports = function() {
+		var list = [];
+
+		// return the list of modules as css string
+		list.toString = function toString() {
+			var result = [];
+			for(var i = 0; i < this.length; i++) {
+				var item = this[i];
+				if(item[2]) {
+					result.push("@media " + item[2] + "{" + item[1] + "}");
+				} else {
+					result.push(item[1]);
+				}
+			}
+			return result.join("");
+		};
+
+		// import a list of modules into the list
+		list.i = function(modules, mediaQuery) {
+			if(typeof modules === "string")
+				modules = [[null, modules, ""]];
+			var alreadyImportedModules = {};
+			for(var i = 0; i < this.length; i++) {
+				var id = this[i][0];
+				if(typeof id === "number")
+					alreadyImportedModules[id] = true;
+			}
+			for(i = 0; i < modules.length; i++) {
+				var item = modules[i];
+				// skip already imported module
+				// this implementation is not 100% perfect for weird media query combinations
+				//  when a module is imported multiple times with different media queries.
+				//  I hope this will never occur (Hey this way we have smaller bundles)
+				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+					if(mediaQuery && !item[2]) {
+						item[2] = mediaQuery;
+					} else if(mediaQuery) {
+						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+					}
+					list.push(item);
+				}
+			}
+		};
+		return list;
+	};
+
+
+/***/ },
+/* 172 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "d5c46b134c17b2138dcd1bb0efa67049.ttf";
+
+/***/ },
+/* 173 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "9745415b8a2a8b9a2480a12f7e2d3ad3.ttf";
+
+/***/ },
+/* 174 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	var stylesInDom = {},
+		memoize = function(fn) {
+			var memo;
+			return function () {
+				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+				return memo;
+			};
+		},
+		isOldIE = memoize(function() {
+			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
+		}),
+		getHeadElement = memoize(function () {
+			return document.head || document.getElementsByTagName("head")[0];
+		}),
+		singletonElement = null,
+		singletonCounter = 0,
+		styleElementsInsertedAtTop = [];
+
+	module.exports = function(list, options) {
+		if(false) {
+			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+		}
+
+		options = options || {};
+		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+		// tags it will allow on a page
+		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+
+		// By default, add <style> tags to the bottom of <head>.
+		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+
+		var styles = listToStyles(list);
+		addStylesToDom(styles, options);
+
+		return function update(newList) {
+			var mayRemove = [];
+			for(var i = 0; i < styles.length; i++) {
+				var item = styles[i];
+				var domStyle = stylesInDom[item.id];
+				domStyle.refs--;
+				mayRemove.push(domStyle);
+			}
+			if(newList) {
+				var newStyles = listToStyles(newList);
+				addStylesToDom(newStyles, options);
+			}
+			for(var i = 0; i < mayRemove.length; i++) {
+				var domStyle = mayRemove[i];
+				if(domStyle.refs === 0) {
+					for(var j = 0; j < domStyle.parts.length; j++)
+						domStyle.parts[j]();
+					delete stylesInDom[domStyle.id];
+				}
+			}
+		};
+	}
+
+	function addStylesToDom(styles, options) {
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			if(domStyle) {
+				domStyle.refs++;
+				for(var j = 0; j < domStyle.parts.length; j++) {
+					domStyle.parts[j](item.parts[j]);
+				}
+				for(; j < item.parts.length; j++) {
+					domStyle.parts.push(addStyle(item.parts[j], options));
+				}
+			} else {
+				var parts = [];
+				for(var j = 0; j < item.parts.length; j++) {
+					parts.push(addStyle(item.parts[j], options));
+				}
+				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+			}
+		}
+	}
+
+	function listToStyles(list) {
+		var styles = [];
+		var newStyles = {};
+		for(var i = 0; i < list.length; i++) {
+			var item = list[i];
+			var id = item[0];
+			var css = item[1];
+			var media = item[2];
+			var sourceMap = item[3];
+			var part = {css: css, media: media, sourceMap: sourceMap};
+			if(!newStyles[id])
+				styles.push(newStyles[id] = {id: id, parts: [part]});
+			else
+				newStyles[id].parts.push(part);
+		}
+		return styles;
+	}
+
+	function insertStyleElement(options, styleElement) {
+		var head = getHeadElement();
+		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+		if (options.insertAt === "top") {
+			if(!lastStyleElementInsertedAtTop) {
+				head.insertBefore(styleElement, head.firstChild);
+			} else if(lastStyleElementInsertedAtTop.nextSibling) {
+				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+			} else {
+				head.appendChild(styleElement);
+			}
+			styleElementsInsertedAtTop.push(styleElement);
+		} else if (options.insertAt === "bottom") {
+			head.appendChild(styleElement);
+		} else {
+			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+		}
+	}
+
+	function removeStyleElement(styleElement) {
+		styleElement.parentNode.removeChild(styleElement);
+		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+		if(idx >= 0) {
+			styleElementsInsertedAtTop.splice(idx, 1);
+		}
+	}
+
+	function createStyleElement(options) {
+		var styleElement = document.createElement("style");
+		styleElement.type = "text/css";
+		insertStyleElement(options, styleElement);
+		return styleElement;
+	}
+
+	function createLinkElement(options) {
+		var linkElement = document.createElement("link");
+		linkElement.rel = "stylesheet";
+		insertStyleElement(options, linkElement);
+		return linkElement;
+	}
+
+	function addStyle(obj, options) {
+		var styleElement, update, remove;
+
+		if (options.singleton) {
+			var styleIndex = singletonCounter++;
+			styleElement = singletonElement || (singletonElement = createStyleElement(options));
+			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+		} else if(obj.sourceMap &&
+			typeof URL === "function" &&
+			typeof URL.createObjectURL === "function" &&
+			typeof URL.revokeObjectURL === "function" &&
+			typeof Blob === "function" &&
+			typeof btoa === "function") {
+			styleElement = createLinkElement(options);
+			update = updateLink.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+				if(styleElement.href)
+					URL.revokeObjectURL(styleElement.href);
+			};
+		} else {
+			styleElement = createStyleElement(options);
+			update = applyToTag.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+			};
+		}
+
+		update(obj);
+
+		return function updateStyle(newObj) {
+			if(newObj) {
+				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+					return;
+				update(obj = newObj);
+			} else {
+				remove();
+			}
+		};
+	}
+
+	var replaceText = (function () {
+		var textStore = [];
+
+		return function (index, replacement) {
+			textStore[index] = replacement;
+			return textStore.filter(Boolean).join('\n');
+		};
+	})();
+
+	function applyToSingletonTag(styleElement, index, remove, obj) {
+		var css = remove ? "" : obj.css;
+
+		if (styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = replaceText(index, css);
+		} else {
+			var cssNode = document.createTextNode(css);
+			var childNodes = styleElement.childNodes;
+			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+			if (childNodes.length) {
+				styleElement.insertBefore(cssNode, childNodes[index]);
+			} else {
+				styleElement.appendChild(cssNode);
+			}
+		}
+	}
+
+	function applyToTag(styleElement, obj) {
+		var css = obj.css;
+		var media = obj.media;
+
+		if(media) {
+			styleElement.setAttribute("media", media)
+		}
+
+		if(styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = css;
+		} else {
+			while(styleElement.firstChild) {
+				styleElement.removeChild(styleElement.firstChild);
+			}
+			styleElement.appendChild(document.createTextNode(css));
+		}
+	}
+
+	function updateLink(linkElement, obj) {
+		var css = obj.css;
+		var sourceMap = obj.sourceMap;
+
+		if(sourceMap) {
+			// http://stackoverflow.com/a/26603875
+			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+		}
+
+		var blob = new Blob([css], { type: "text/css" });
+
+		var oldSrc = linkElement.href;
+
+		linkElement.href = URL.createObjectURL(blob);
+
+		if(oldSrc)
+			URL.revokeObjectURL(oldSrc);
+	}
+
+
+/***/ },
+/* 175 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	/**
+	 * Created by noonon on 6/12/16.
+	 */
+
+	module.exports = function (React) {
+
+	    __webpack_require__(176);
+
+	    return React.createClass({
+	        getInitialState: function getInitialState() {
+	            var container = document.querySelector('.container'),
+	                height = container.offsetHeight,
+	                width = container.offsetWidth,
+	                contentWidth = Math.floor(width * 0.8 * 0.5),
+	                contentHeight = Math.floor(height * 0.8 - width * 0.2);
+
+	            return {
+	                height: height,
+	                width: width,
+	                minWidth: 200,
+	                minHeight: 100,
+	                fontSize: 16,
+	                lineHeight: 16,
+	                contentHeight: contentHeight,
+	                contentWidth: contentWidth
+	            };
+	        },
+
+	        mouseUp: function mouseUp() {
+
+	            if (this.state.bottom || this.state.right) {
+
+	                this.setState({
+	                    bottom: undefined,
+	                    right: undefined
+	                });
+	            }
+
+	            return false;
+	        },
+
+	        copyToClipboard: function copyToClipboard(text) {
+	            if (window.clipboardData && window.clipboardData.setData) {
+	                return clipboardData.setData("Text", text);
+	            } else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
+	                var textarea = document.createElement("textarea");
+
+	                textarea.textContent = text;
+	                textarea.style.position = "fixed";
+	                document.body.appendChild(textarea);
+	                textarea.select();
+
+	                try {
+	                    return document.execCommand("copy");
+	                } catch (ex) {
+	                    console.warn("Copy to clipboard failed.", ex);
+	                    return false;
+	                } finally {
+	                    document.body.removeChild(textarea);
+	                }
+	            }
+	        },
+
+	        mouseDown: function mouseDown(type, event) {
+	            var stateObject = type === "bottom" ? { bottom: event.nativeEvent.clientY } : { right: event.nativeEvent.clientX };
+
+	            this.setState(stateObject);
+
+	            return false;
+	        },
+
+	        changeCanvas: function changeCanvas(mainParam, step) {
+
+	            return mainParam - step;
+	        },
+
+	        getText: function getText() {
+	            var text = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
+
+	            var padding = (this.state.paddingText || 25) * 2,
+	                textConteinerHeight = this.state.contentHeight - padding,
+	                textContainerWidth = this.state.contentWidth - padding,
+	                strings = (textConteinerHeight / this.state.lineHeight).toFixed(),
+	                chars,
+	                lastChar,
+	                newText = '',
+	                position = 0,
+	                lastPosition,
+	                charsInString = Math.ceil(textContainerWidth / (this.state.fontSize * .5));
+
+	            for (var i = strings; i > 0; i--) {
+	                chars = text.substring(position, position + charsInString);
+	                lastChar = chars[chars.length - 1];
+
+	                if (lastChar == ' ') {
+	                    position += chars.length;
+	                } else {
+	                    lastPosition = chars.split(' ');
+
+	                    lastPosition = lastPosition[lastPosition.length - 1];
+	                    lastPosition = chars.length - lastPosition.length;
+	                    position += lastPosition;
+	                    chars = chars.substring(0, lastPosition);
+	                }
+
+	                newText += i !== 1 ? chars + ' ' : chars + '...';
+	            }
+
+	            return {
+	                text: newText,
+	                strings: strings,
+	                width: textContainerWidth,
+	                height: textConteinerHeight - textConteinerHeight % this.state.lineHeight
+	            };
+	        },
+
+	        mouseMove: function mouseMove(event) {
+	            var state = this.state,
+	                stateObject,
+	                stepParam,
+	                textParam;
+
+	            if (state.bottom !== undefined) {
+	                stepParam = state.bottom - event.clientY;
+
+	                var height = this.changeCanvas(state.contentHeight, stepParam);
+
+	                if (height >= this.state.minHeight) {
+	                    stateObject = {
+	                        bottom: event.clientY,
+	                        contentHeight: height
+	                    };
+
+	                    this.setState(stateObject);
+	                }
+	            } else if (state.right !== undefined) {
+	                stepParam = state.right - event.clientX;
+
+	                var width = this.changeCanvas(state.contentWidth, stepParam);
+
+	                if (width >= this.state.minWidth) {
+
+	                    stateObject = {
+	                        right: event.clientX,
+	                        contentWidth: width
+	                    };
+
+	                    this.setState(stateObject);
+	                }
+	            }
+
+	            return false;
+	        },
+
+	        componentDidMount: function componentDidMount() {
+	            var content = document.querySelector('.fishtext__workflow-content-canvas-text-block');
+
+	            document.addEventListener('mouseup', this.mouseUp);
+	            document.addEventListener('mousemove', this.mouseMove);
+	            this.getData();
+
+	            this.setState({
+	                paddingText: content.offsetLeft
+	            });
+	        },
+
+	        componentWillUnmount: function componentWillUnmount() {
+	            document.removeEventListener('mouseup', this.mouseUp);
+	            document.removeEventListener('mousemove', this.mouseMove);
+	        },
+
+	        onClickButton: function onClickButton(text) {
+	            this.copyToClipboard(text);
+	        },
+
+	        getData: function getData() {
+
+	            var ajax = new XMLHttpRequest();
+
+	            ajax.open('GET', 'api/text', true);
+	            ajax.onreadystatechange = function () {
+	                if (ajax.status === 200 && ajax.readyState == 4) {
+	                    var data = JSON.parse(ajax.responseText);
+
+	                    data.textLength = data.text.length;
+
+	                    this.setState(data);
+	                }
+	            }.bind(this);
+	            ajax.send();
+	        },
+
+	        render: function render() {
+
+	            var textParams = this.getText(this.state.text),
+	                contentWidth = textParams.width + 'px',
+	                contentHeight = textParams.height + 'px',
+	                words = textParams.text.split(' ').length,
+	                canvasStyle = {
+	                height: this.state.contentHeight,
+	                width: this.state.contentWidth
+	            },
+	                textStyle = {
+	                lineHeight: this.state.lineHeight + 'px',
+	                fontSize: this.state.fontSize + 'px',
+	                height: contentHeight
+	            };
+
+	            return React.createElement(
+	                'div',
+	                { className: 'fishtext' },
+	                React.createElement(
+	                    'div',
+	                    { className: 'fishtext__workflow' },
+	                    React.createElement(
+	                        'div',
+	                        { className: 'fishtext__workflow-content' },
+	                        React.createElement(
+	                            'div',
+	                            { style: canvasStyle, className: 'fishtext__workflow-content-canvas' },
+	                            React.createElement(
+	                                'div',
+	                                { className: 'fishtext__workflow-content-canvas-string' },
+	                                React.createElement(
+	                                    'div',
+	                                    { className: 'fishtext__workflow-content-canvas-string-field' },
+	                                    React.createElement(
+	                                        'div',
+	                                        {
+	                                            className: 'fishtext__workflow-content-canvas-string-field-block' },
+	                                        textParams.strings
+	                                    )
+	                                ),
+	                                React.createElement(
+	                                    'div',
+	                                    { className: 'fishtext__workflow-content-canvas-string-text' },
+	                                    'строки'
+	                                )
+	                            ),
+	                            React.createElement(
+	                                'div',
+	                                { className: 'fishtext__workflow-content-canvas-words' },
+	                                React.createElement(
+	                                    'div',
+	                                    { className: 'fishtext__workflow-content-canvas-words-field' },
+	                                    React.createElement(
+	                                        'div',
+	                                        { className: 'fishtext__workflow-content-canvas-words-field-block' },
+	                                        words
+	                                    )
+	                                ),
+	                                React.createElement(
+	                                    'div',
+	                                    { className: 'fishtext__workflow-content-canvas-words-text' },
+	                                    'слово'
+	                                )
+	                            ),
+	                            React.createElement(
+	                                'div',
+	                                { className: 'fishtext__workflow-content-canvas-height' },
+	                                React.createElement(
+	                                    'div',
+	                                    { className: 'fishtext__workflow-content-canvas-height-text' },
+	                                    'высота'
+	                                ),
+	                                React.createElement(
+	                                    'div',
+	                                    { className: 'fishtext__workflow-content-canvas-height-field' },
+	                                    React.createElement(
+	                                        'div',
+	                                        {
+	                                            className: 'fishtext__workflow-content-canvas-height-field-block' },
+	                                        contentHeight
+	                                    )
+	                                )
+	                            ),
+	                            React.createElement(
+	                                'div',
+	                                { className: 'fishtext__workflow-content-canvas-width' },
+	                                React.createElement(
+	                                    'div',
+	                                    { className: 'fishtext__workflow-content-canvas-width-field' },
+	                                    React.createElement(
+	                                        'div',
+	                                        { className: 'fishtext__workflow-content-canvas-width-field-block' },
+	                                        React.createElement(
+	                                            'div',
+	                                            {
+	                                                className: 'fishtext__workflow-content-canvas-width-field-block' },
+	                                            contentWidth
+	                                        )
+	                                    )
+	                                ),
+	                                React.createElement(
+	                                    'div',
+	                                    { className: 'fishtext__workflow-content-canvas-width-text' },
+	                                    'ширина'
+	                                )
+	                            ),
+	                            React.createElement(
+	                                'div',
+	                                { onMouseDown: this.mouseDown.bind(this, 'right'),
+	                                    className: 'fishtext__workflow-content-canvas-right' },
+	                                React.createElement(
+	                                    'div',
+	                                    { className: 'fishtext__workflow-content-canvas-right-lines' },
+	                                    React.createElement('div', { className: 'fishtext__workflow-content-canvas-right-lines-line' }),
+	                                    React.createElement('div', { className: 'fishtext__workflow-content-canvas-right-lines-line' }),
+	                                    React.createElement('div', { className: 'fishtext__workflow-content-canvas-right-lines-line' })
+	                                )
+	                            ),
+	                            React.createElement(
+	                                'div',
+	                                { onMouseDown: this.mouseDown.bind(this, 'bottom'),
+	                                    className: 'fishtext__workflow-content-canvas-bottom' },
+	                                React.createElement(
+	                                    'div',
+	                                    { className: 'fishtext__workflow-content-canvas-bottom-lines' },
+	                                    React.createElement('div', { className: 'fishtext__workflow-content-canvas-bottom-lines-line' }),
+	                                    React.createElement('div', { className: 'fishtext__workflow-content-canvas-bottom-lines-line' }),
+	                                    React.createElement('div', { className: 'fishtext__workflow-content-canvas-bottom-lines-line' })
+	                                )
+	                            ),
+	                            React.createElement(
+	                                'div',
+	                                { className: 'fishtext__workflow-content-canvas-text' },
+	                                React.createElement(
+	                                    'div',
+	                                    { style: textStyle,
+	                                        className: 'fishtext__workflow-content-canvas-text-block' },
+	                                    textParams.text
+	                                )
+	                            )
+	                        )
+	                    )
+	                ),
+	                React.createElement(
+	                    'div',
+	                    { className: 'fishtext__footer' },
+	                    React.createElement(
+	                        'button',
+	                        { onClick: this.onClickButton.bind(this, textParams.text),
+	                            className: 'fishtext__footer-button' },
+	                        React.createElement(
+	                            'span',
+	                            { className: 'fishtext__footer-button-text' },
+	                            'Скопировать'
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    });
+	};
+
+/***/ },
+/* 176 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(177);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(174)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/stylus-loader/index.js!./main.styl", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/stylus-loader/index.js!./main.styl");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 177 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(171)();
+	// imports
+
+
+	// module
+	exports.push([module.id, "@font-face {\n  font-family: \"RobotoLight\";\n  src: url(" + __webpack_require__(172) + ") format(\"truetype\");\n  font-style: normal;\n  font-weight: normal;\n}\n@font-face {\n  font-family: \"RobotoMedium\";\n  src: url(" + __webpack_require__(173) + ") format(\"truetype\");\n  font-style: normal;\n  font-weight: normal;\n}\n.fishtext {\n  width: 100%;\n  height: 100%;\n  -moz-user-select: -moz-none;\n  -khtml-user-select: none;\n  -webkit-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n.fishtext__workflow {\n  min-height: 80%;\n  height: initial;\n}\n.fishtext__workflow-content {\n  padding: 15% 10% 5%;\n  box-sizing: border-box;\n}\n.fishtext__workflow-content-canvas {\n  position: relative;\n  margin: auto;\n  width: 100%;\n  height: 100%;\n}\n.fishtext__workflow-content-canvas-width {\n  position: absolute;\n  width: 140px;\n  height: 80px;\n  top: 0;\n  right: 0;\n  transform: translate(115%, -50%);\n}\n.fishtext__workflow-content-canvas-width-field {\n  width: 100%;\n  height: 50%;\n  position: relative;\n}\n.fishtext__workflow-content-canvas-width-field-block {\n  position: absolute;\n  font-size: 10pt;\n  font-family: RobotoLight;\n  top: 50%;\n  text-align: center;\n  min-width: 40px;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  border: 2px solid #a0a0a0;\n  border-radius: 10px;\n  background-color: #fff;\n  padding: 5px;\n  display: inline-block;\n}\n.fishtext__workflow-content-canvas-width-text {\n  width: 100%;\n  line-height: 40px;\n  font-size: 12pt;\n  font-family: RobotoMedium;\n  text-align: center;\n  color: #a0a0a0;\n  height: 50%;\n}\n.fishtext__workflow-content-canvas-width:after {\n  content: '';\n  position: absolute;\n  transform: translateY(-50%);\n  width: 90%;\n  height: 3px;\n  top: 50%;\n  left: 5%;\n  border-radius: 20px;\n  background-color: #fff;\n}\n.fishtext__workflow-content-canvas-height {\n  position: absolute;\n  top: 0;\n  width: 140px;\n  height: 80px;\n  right: 0;\n  transform: translate(50%, -115%);\n}\n.fishtext__workflow-content-canvas-height-field {\n  width: 50%;\n  height: 100%;\n  vertical-align: top;\n  position: relative;\n  display: inline-block;\n}\n.fishtext__workflow-content-canvas-height-field-block {\n  position: absolute;\n  font-size: 10pt;\n  font-family: RobotoLight;\n  text-align: center;\n  top: 50%;\n  min-width: 40px;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  border: 2px solid #a0a0a0;\n  border-radius: 10px;\n  background-color: #fff;\n  padding: 5px;\n  display: inline-block;\n}\n.fishtext__workflow-content-canvas-height-text {\n  width: 50%;\n  font-size: 12pt;\n  font-family: RobotoMedium;\n  display: inline-block;\n  vertical-align: top;\n  text-align: center;\n  color: #a0a0a0;\n  line-height: 80px;\n  height: 100%;\n}\n.fishtext__workflow-content-canvas-height:after {\n  content: '';\n  position: absolute;\n  height: 90%;\n  width: 3px;\n  transform: translateX(-50%);\n  top: 5%;\n  border-radius: 20px;\n  left: 50%;\n  background-color: #fff;\n}\n.fishtext__workflow-content-canvas-words {\n  position: absolute;\n  top: 0;\n  width: 140px;\n  height: 80px;\n  left: 0;\n  transform: translate(-115%, -50%);\n}\n.fishtext__workflow-content-canvas-words-field {\n  width: 100%;\n  height: 50%;\n  position: relative;\n}\n.fishtext__workflow-content-canvas-words-field-block {\n  position: absolute;\n  top: 50%;\n  font-size: 10pt;\n  font-family: RobotoLight;\n  min-width: 40px;\n  text-align: center;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  border: 2px solid #a0a0a0;\n  border-radius: 10px;\n  background-color: #fff;\n  padding: 5px;\n  display: inline-block;\n}\n.fishtext__workflow-content-canvas-words-text {\n  width: 100%;\n  font-size: 12pt;\n  font-family: RobotoMedium;\n  color: #a0a0a0;\n  line-height: 40px;\n  text-align: center;\n  height: 50%;\n}\n.fishtext__workflow-content-canvas-words:after {\n  content: '';\n  position: absolute;\n  transform: translateY(-50%);\n  width: 90%;\n  height: 3px;\n  top: 50%;\n  left: 5%;\n  border-radius: 20px;\n  background-color: #fff;\n}\n.fishtext__workflow-content-canvas-string {\n  position: absolute;\n  top: 0;\n  width: 140px;\n  height: 80px;\n  left: 0;\n  transform: translate(-50%, -115%);\n}\n.fishtext__workflow-content-canvas-string-text {\n  display: inline-block;\n  vertical-align: top;\n  height: 100%;\n  width: 50%;\n  font-size: 12pt;\n  font-family: RobotoMedium;\n  text-align: center;\n  color: #a0a0a0;\n  line-height: 80px;\n}\n.fishtext__workflow-content-canvas-string-field {\n  display: inline-block;\n  vertical-align: top;\n  position: relative;\n  height: 100%;\n  width: 50%;\n}\n.fishtext__workflow-content-canvas-string-field-block {\n  position: absolute;\n  top: 50%;\n  font-family: RobotoLight;\n  font-size: 10pt;\n  min-width: 40px;\n  text-align: center;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  border: 2px solid #a0a0a0;\n  border-radius: 10px;\n  background-color: #fff;\n  padding: 5px;\n  display: inline-block;\n}\n.fishtext__workflow-content-canvas-string:after {\n  content: '';\n  position: absolute;\n  height: 90%;\n  width: 3px;\n  transform: translateX(-50%);\n  top: 5%;\n  border-radius: 20px;\n  left: 50%;\n  background-color: #fff;\n}\n.fishtext__workflow-content-canvas-bottom,\n.fishtext__workflow-content-canvas-right {\n  position: absolute;\n  background-color: #3d3d3d;\n}\n.fishtext__workflow-content-canvas-bottom {\n  bottom: 0;\n  left: 50%;\n  width: 80px;\n  height: 30px;\n  transform: translate(-50%, 100%);\n  border-bottom-right-radius: 10px;\n  border-bottom-left-radius: 10px;\n}\n.fishtext__workflow-content-canvas-bottom-lines {\n  width: 40%;\n  margin: auto;\n  padding-top: 7%;\n  padding-bottom: 7%;\n  box-sizing: border-box;\n  height: 100%;\n  display: flex;\n  display: -moz-box-flex;\n  display: -webkit-flex;\n  flex-flow: column nowrap;\n  justify-content: space-around;\n  -webkit-flex-flow: column nowrap;\n}\n.fishtext__workflow-content-canvas-bottom-lines-line {\n  width: 100%;\n  height: 3px;\n  flex: 0 0 auto;\n  border-radius: 10px;\n  background-color: #505050;\n  -webkit-flex: 0 0 auto;\n  -moz-box-flex: 0 0 auto;\n}\n.fishtext__workflow-content-canvas-right {\n  right: 0;\n  width: 30px;\n  height: 80px;\n  top: 50%;\n  transform: translate(100%, -50%);\n  border-top-right-radius: 10px;\n  border-bottom-right-radius: 10px;\n}\n.fishtext__workflow-content-canvas-right-lines {\n  height: 100%;\n  padding: 0 20%;\n  box-sizing: border-box;\n  width: 100%;\n  display: flex;\n  display: -moz-box-flex;\n  display: -webkit-flex;\n  flex-flow: row nowrap;\n  justify-content: space-around;\n  -webkit-flex-flow: row nowrap;\n}\n.fishtext__workflow-content-canvas-right-lines-line {\n  height: 40%;\n  width: 3px;\n  margin-top: auto;\n  margin-bottom: auto;\n  flex: 0 0 auto;\n  border-radius: 10px;\n  background-color: #505050;\n  -webkit-flex: 0 0 auto;\n  -moz-box-flex: 0 0 auto;\n}\n.fishtext__workflow-content-canvas-text {\n  width: 100%;\n  box-sizing: border-box;\n  height: 100%;\n  font-family: RobotoLight;\n  background-color: #fff;\n  margin: auto;\n  padding: 25px;\n  border-bottom-left-radius: 10px;\n  border-bottom-right-radius: 10px;\n}\n.fishtext__workflow-content-canvas-text-block {\n  height: 100%;\n  width: 100%;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n.fishtext__workflow-content-canvas:after {\n  width: calc(20px + 100%);\n  position: absolute;\n  top: -10px;\n  left: -10px;\n  content: '';\n  display: block;\n  border-radius: 10px;\n  height: 10px;\n  background-color: #a0a0a0;\n}\n.fishtext__footer {\n  height: 20%;\n  position: relative;\n}\n.fishtext__footer-button {\n  outline: none;\n  border: none;\n  border-radius: 40px;\n  padding: 0;\n  width: 200px;\n  height: 40px;\n  position: absolute;\n  box-shadow: 0 5px 10px 0 #505050;\n  transition: box-shadow 0.3s ease, background 0.3s ease;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%);\n  display: block;\n  color: #989898;\n  margin: auto;\n  background: linear-gradient(to bottom, #fff 0%, #d1d1d1 60%);\n}\n.fishtext__footer-button:after {\n  content: '';\n  background: linear-gradient(to bottom, #d1d1d1 0%, #fff 100%);\n  position: absolute;\n  opacity: 0;\n  transition: opacity 0.3s ease;\n  z-index: 10;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  border-radius: 40px;\n}\n.fishtext__footer-button:focus {\n  box-shadow: 0 2px 10px 0 #505050;\n}\n.fishtext__footer-button:focus:after {\n  background: linear-gradient(to bottom, #d1d1d1 0%, #fff 100%);\n  position: absolute;\n  opacity: 1;\n}\n.fishtext__footer-button:hover:after {\n  background: linear-gradient(to bottom, #d1d1d1 0%, #fff 100%);\n  position: absolute;\n  opacity: 1;\n}\n.fishtext__footer-button-text {\n  position: absolute;\n  top: 50%;\n  font-size: 10pt;\n  font-family: RobotoMedium;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  z-index: 11;\n}\n", ""]);
+
+	// exports
+
 
 /***/ }
 /******/ ]);

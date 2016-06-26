@@ -1,0 +1,339 @@
+@import "~style/vars.styl"
+
+.fishtext
+  width 100%
+  height 100%
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  &__workflow
+    min-height 80%
+    height initial
+    &-content
+      padding: 15% 10% 5%;
+      box-sizing border-box
+      &-canvas
+        position relative
+        margin auto
+        width 100%
+        height 100%
+        &-width
+          position absolute
+          width 140px
+          height 80px
+          top 0
+          right 0
+          transform translate(115%, -50%)
+          &-field
+            width 100%
+            height 50%
+            position relative
+            &-block
+              position absolute
+              font-size 10pt
+              font-family RobotoLight
+              top 50%
+              text-align: center;
+              min-width: 40px;
+              left 50%
+              transform translate(-50%, -50%)
+              border 2px solid color_gray_2
+              border-radius 10px
+              background-color color_white_1
+              padding: 5px;
+              display: inline-block;
+          &-text
+            width 100%
+            line-height 40px
+            font-size: 12pt;
+            font-family RobotoMedium
+            text-align center
+            color color_gray_2
+            height 50%
+          &:after
+            content ''
+            position absolute
+            transform translateY(-50%)
+            width 90%
+            height 3px
+            top 50%
+            left 5%
+            border-radius 20px
+            background-color color_white_1
+        &-height
+          position absolute
+          top 0
+          width 140px
+          height 80px
+          right 0
+          transform translate(50%, -115%)
+          &-field
+            width 50%
+            height 100%
+            vertical-align top
+            position relative
+            display inline-block
+            &-block
+              position absolute
+              font-size 10pt
+              font-family RobotoLight
+              text-align: center;
+              top 50%
+              min-width: 40px;
+              left 50%
+              transform translate(-50%, -50%)
+              border 2px solid color_gray_2
+              border-radius 10px
+              background-color color_white_1
+              padding: 5px;
+              display: inline-block
+          &-text
+            width 50%
+            font-size: 12pt;
+            font-family RobotoMedium
+            display inline-block
+            vertical-align top
+            text-align: center;
+            color color_gray_2
+            line-height: 80px;
+            height 100%
+          &:after
+            content ''
+            position absolute
+            height 90%
+            width 3px
+            transform translateX(-50%)
+            top 5%
+            border-radius 20px
+            left 50%
+            background-color color_white_1
+        &-words
+          position absolute
+          top 0
+          width 140px
+          height 80px
+          left 0
+          transform translate(-115%, -50%)
+          &-field
+            width 100%
+            height 50%
+            position relative
+            &-block
+              position absolute
+              top 50%
+              font-size 10pt
+              font-family RobotoLight
+              min-width: 40px;
+              text-align: center;
+              left 50%
+              transform translate(-50%, -50%)
+              border 2px solid color_gray_2
+              border-radius 10px
+              background-color color_white_1
+              padding: 5px;
+              display: inline-block;
+          &-text
+            width 100%
+            font-size: 12pt;
+            font-family RobotoMedium
+            color color_gray_2
+            line-height 40px
+            text-align center
+            height 50%
+          &:after
+            content ''
+            position absolute
+            transform translateY(-50%)
+            width 90%
+            height 3px
+            top 50%
+            left 5%
+            border-radius 20px
+            background-color color_white_1
+        &-string
+          position absolute
+          top 0
+          width 140px
+          height 80px
+          left 0
+          transform translate(-50%, -115%)
+          &-text
+            display inline-block
+            vertical-align top
+            height 100%
+            width 50%
+            font-size: 12pt;
+            font-family RobotoMedium
+            text-align: center;
+            color color_gray_2
+            line-height: 80px;
+          &-field
+            display inline-block
+            vertical-align top
+            position relative
+            height 100%
+            width 50%
+            &-block
+              position absolute
+              top 50%
+              font-family RobotoLight
+              font-size 10pt
+              min-width: 40px;
+              text-align: center;
+              left 50%
+              transform translate(-50%, -50%)
+              border 2px solid color_gray_2
+              border-radius 10px
+              background-color color_white_1
+              padding: 5px;
+              display: inline-block
+          &:after
+            content ''
+            position absolute
+            height 90%
+            width 3px
+            transform translateX(-50%)
+            top 5%
+            border-radius 20px
+            left 50%
+            background-color color_white_1
+
+        &-bottom, &-right
+          position absolute
+          background-color color_black_1
+        &-bottom
+          bottom 0
+          left 50%
+          width 80px
+          height 30px
+          transform translate(-50%, 100%)
+          border-bottom-right-radius 10px
+          border-bottom-left-radius 10px
+          &-lines
+            width 40%
+            margin auto
+            padding-top 7%
+            padding-bottom 7%
+            box-sizing border-box
+            height 100%
+            display flex
+            display -moz-box-flex
+            display -webkit-flex
+            flex-flow column nowrap;
+            justify-content: space-around;
+            -webkit-flex-flow column nowrap;
+            &-line
+              width 100%
+              height 3px
+              flex 0 0 auto
+              border-radius 10px
+              background-color color_gray_3
+              -webkit-flex 0 0 auto
+              -moz-box-flex 0 0 auto
+        &-right
+          right 0
+          width 30px
+          height 80px
+          top 50%
+          transform translate(100%, -50%)
+          border-top-right-radius 10px
+          border-bottom-right-radius 10px
+          &-lines
+            height 100%
+            padding 0 20%
+            box-sizing border-box
+            width 100%
+            display flex
+            display -moz-box-flex
+            display -webkit-flex
+            flex-flow row nowrap;
+            justify-content: space-around;
+            -webkit-flex-flow row nowrap;
+            &-line
+              height 40%
+              width 3px
+              margin-top auto
+              margin-bottom auto
+              flex 0 0 auto
+              border-radius 10px
+              background-color color_gray_3
+              -webkit-flex 0 0 auto
+              -moz-box-flex 0 0 auto
+        &-text
+          width 100%
+          box-sizing border-box
+          height 100%
+          font-family RobotoLight
+          background-color color_white_1
+          margin auto
+          padding 25px
+          border-bottom-left-radius 10px
+          border-bottom-right-radius 10px
+          &-block
+            height 100%
+            width 100%
+            overflow hidden
+            text-overflow: ellipsis;
+        &:after
+          width "calc(%s + 100%)" % 20px
+          position absolute
+          top -10px
+          left -10px
+          content ''
+          display block
+          border-radius 10px
+          height 10px
+          background-color color_gray_2
+  &__footer
+    height 20%
+    position relative
+    &-button
+      outline: none;
+      border: none;
+      border-radius: 40px;
+      padding: 0;
+      width 200px
+      height 40px
+      position absolute
+      box-shadow 0 5px 10px 0 color_gray_3
+      transition box-shadow .3s ease, background .3s ease
+      top 50%
+      left 50%
+      transform translate(-50%)
+      display block
+      color color_gray_4
+      margin auto
+      background linear-gradient(to bottom, color_white_1 0%, color_gray_1 60%)
+      &:after
+        content ''
+        background linear-gradient(to bottom, color_gray_1 0%, color_white_1 100%)
+        position absolute
+        opacity 0
+        transition opacity .3s ease
+        z-index 10
+        top 0
+        left 0
+        width 100%
+        height 100%
+        border-radius: 40px;
+      &:focus
+        box-shadow 0 2px 10px 0 color_gray_3
+        &:after
+          background linear-gradient(to bottom, color_gray_1 0%, color_white_1 100%)
+          position absolute
+          opacity 1
+      &:hover
+        &:after
+          background linear-gradient(to bottom, color_gray_1 0%, color_white_1 100%)
+          position absolute
+          opacity 1
+      &-text
+        position absolute
+        top 50%
+        font-size: 10pt;
+        font-family RobotoMedium
+        left 50%
+        transform translate(-50%, -50%)
+        z-index 11

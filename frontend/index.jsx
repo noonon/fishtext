@@ -4,10 +4,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-var Hello = React.createClass({
-    render() {
-        return <h1>Hello</h1>
-    }
-});
+require('./style/index.styl');
 
-ReactDOM.render(<Hello/>, document.querySelector('.container'));
+var MainComponent = require('./components/main.jsx')(React);
+
+ReactDOM.render(<MainComponent/>, document.querySelector('.container'));

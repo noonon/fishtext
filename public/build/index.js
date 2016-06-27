@@ -72,7 +72,9 @@
 
 	var MainComponent = __webpack_require__(175)(_react2.default);
 
-	_reactDom2.default.render(_react2.default.createElement(MainComponent, null), document.querySelector('.container'));
+	_reactDom2.default.render(_react2.default.createElement(MainComponent, {
+	  __self: undefined
+	}), document.querySelector('.container'));
 
 /***/ },
 /* 2 */
@@ -184,10 +186,30 @@
 
 	var process = module.exports = {};
 
-	// cached from whatever global is present so that test runners that stub it don't break things.
-	var cachedSetTimeout = setTimeout;
-	var cachedClearTimeout = clearTimeout;
+	// cached from whatever global is present so that test runners that stub it
+	// don't break things.  But we need to wrap it in a try catch in case it is
+	// wrapped in strict mode code which doesn't define any globals.  It's inside a
+	// function because try/catches deoptimize in certain engines.
 
+	var cachedSetTimeout;
+	var cachedClearTimeout;
+
+	(function () {
+	  try {
+	    cachedSetTimeout = setTimeout;
+	  } catch (e) {
+	    cachedSetTimeout = function () {
+	      throw new Error('setTimeout is not defined');
+	    }
+	  }
+	  try {
+	    cachedClearTimeout = clearTimeout;
+	  } catch (e) {
+	    cachedClearTimeout = function () {
+	      throw new Error('clearTimeout is not defined');
+	    }
+	  }
+	} ())
 	var queue = [];
 	var draining = false;
 	var currentQueue;
@@ -20897,8 +20919,6 @@
 	                if (ajax.status === 200 && ajax.readyState == 4) {
 	                    var data = JSON.parse(ajax.responseText);
 
-	                    data.textLength = data.text.length;
-
 	                    this.setState(data);
 	                }
 	            }.bind(this);
@@ -20906,6 +20926,8 @@
 	        },
 
 	        render: function render() {
+
+	            console.log(this.state.text);
 
 	            var textParams = this.getText(this.state.text),
 	                contentWidth = textParams.width + 'px',
@@ -20923,126 +20945,159 @@
 
 	            return React.createElement(
 	                'div',
-	                { className: 'fishtext' },
+	                { className: 'fishtext', __self: this
+	                },
 	                React.createElement(
 	                    'div',
-	                    { className: 'fishtext__workflow' },
+	                    { className: 'fishtext__workflow', __self: this
+	                    },
 	                    React.createElement(
 	                        'div',
-	                        { className: 'fishtext__workflow-content' },
+	                        { className: 'fishtext__workflow-content', __self: this
+	                        },
 	                        React.createElement(
 	                            'div',
-	                            { style: canvasStyle, className: 'fishtext__workflow-content-canvas' },
+	                            { style: canvasStyle, className: 'fishtext__workflow-content-canvas', __self: this
+	                            },
 	                            React.createElement(
 	                                'div',
-	                                { className: 'fishtext__workflow-content-canvas-string' },
+	                                { className: 'fishtext__workflow-content-canvas-string', __self: this
+	                                },
 	                                React.createElement(
 	                                    'div',
-	                                    { className: 'fishtext__workflow-content-canvas-string-field' },
+	                                    { className: 'fishtext__workflow-content-canvas-string-field', __self: this
+	                                    },
 	                                    React.createElement(
 	                                        'div',
 	                                        {
-	                                            className: 'fishtext__workflow-content-canvas-string-field-block' },
+	                                            className: 'fishtext__workflow-content-canvas-string-field-block', __self: this
+	                                        },
 	                                        textParams.strings
 	                                    )
 	                                ),
 	                                React.createElement(
 	                                    'div',
-	                                    { className: 'fishtext__workflow-content-canvas-string-text' },
+	                                    { className: 'fishtext__workflow-content-canvas-string-text', __self: this
+	                                    },
 	                                    'строки'
 	                                )
 	                            ),
 	                            React.createElement(
 	                                'div',
-	                                { className: 'fishtext__workflow-content-canvas-words' },
+	                                { className: 'fishtext__workflow-content-canvas-words', __self: this
+	                                },
 	                                React.createElement(
 	                                    'div',
-	                                    { className: 'fishtext__workflow-content-canvas-words-field' },
+	                                    { className: 'fishtext__workflow-content-canvas-words-field', __self: this
+	                                    },
 	                                    React.createElement(
 	                                        'div',
-	                                        { className: 'fishtext__workflow-content-canvas-words-field-block' },
+	                                        { className: 'fishtext__workflow-content-canvas-words-field-block', __self: this
+	                                        },
 	                                        words
 	                                    )
 	                                ),
 	                                React.createElement(
 	                                    'div',
-	                                    { className: 'fishtext__workflow-content-canvas-words-text' },
+	                                    { className: 'fishtext__workflow-content-canvas-words-text', __self: this
+	                                    },
 	                                    'слово'
 	                                )
 	                            ),
 	                            React.createElement(
 	                                'div',
-	                                { className: 'fishtext__workflow-content-canvas-height' },
+	                                { className: 'fishtext__workflow-content-canvas-height', __self: this
+	                                },
 	                                React.createElement(
 	                                    'div',
-	                                    { className: 'fishtext__workflow-content-canvas-height-text' },
+	                                    { className: 'fishtext__workflow-content-canvas-height-text', __self: this
+	                                    },
 	                                    'высота'
 	                                ),
 	                                React.createElement(
 	                                    'div',
-	                                    { className: 'fishtext__workflow-content-canvas-height-field' },
+	                                    { className: 'fishtext__workflow-content-canvas-height-field', __self: this
+	                                    },
 	                                    React.createElement(
 	                                        'div',
 	                                        {
-	                                            className: 'fishtext__workflow-content-canvas-height-field-block' },
+	                                            className: 'fishtext__workflow-content-canvas-height-field-block', __self: this
+	                                        },
 	                                        contentHeight
 	                                    )
 	                                )
 	                            ),
 	                            React.createElement(
 	                                'div',
-	                                { className: 'fishtext__workflow-content-canvas-width' },
+	                                { className: 'fishtext__workflow-content-canvas-width', __self: this
+	                                },
 	                                React.createElement(
 	                                    'div',
-	                                    { className: 'fishtext__workflow-content-canvas-width-field' },
+	                                    { className: 'fishtext__workflow-content-canvas-width-field', __self: this
+	                                    },
 	                                    React.createElement(
 	                                        'div',
-	                                        { className: 'fishtext__workflow-content-canvas-width-field-block' },
+	                                        { className: 'fishtext__workflow-content-canvas-width-field-block', __self: this
+	                                        },
 	                                        React.createElement(
 	                                            'div',
 	                                            {
-	                                                className: 'fishtext__workflow-content-canvas-width-field-block' },
+	                                                className: 'fishtext__workflow-content-canvas-width-field-block', __self: this
+	                                            },
 	                                            contentWidth
 	                                        )
 	                                    )
 	                                ),
 	                                React.createElement(
 	                                    'div',
-	                                    { className: 'fishtext__workflow-content-canvas-width-text' },
+	                                    { className: 'fishtext__workflow-content-canvas-width-text', __self: this
+	                                    },
 	                                    'ширина'
 	                                )
 	                            ),
 	                            React.createElement(
 	                                'div',
 	                                { onMouseDown: this.mouseDown.bind(this, 'right'),
-	                                    className: 'fishtext__workflow-content-canvas-right' },
+	                                    className: 'fishtext__workflow-content-canvas-right', __self: this
+	                                },
 	                                React.createElement(
 	                                    'div',
-	                                    { className: 'fishtext__workflow-content-canvas-right-lines' },
-	                                    React.createElement('div', { className: 'fishtext__workflow-content-canvas-right-lines-line' }),
-	                                    React.createElement('div', { className: 'fishtext__workflow-content-canvas-right-lines-line' }),
-	                                    React.createElement('div', { className: 'fishtext__workflow-content-canvas-right-lines-line' })
+	                                    { className: 'fishtext__workflow-content-canvas-right-lines', __self: this
+	                                    },
+	                                    React.createElement('div', { className: 'fishtext__workflow-content-canvas-right-lines-line', __self: this
+	                                    }),
+	                                    React.createElement('div', { className: 'fishtext__workflow-content-canvas-right-lines-line', __self: this
+	                                    }),
+	                                    React.createElement('div', { className: 'fishtext__workflow-content-canvas-right-lines-line', __self: this
+	                                    })
 	                                )
 	                            ),
 	                            React.createElement(
 	                                'div',
 	                                { onMouseDown: this.mouseDown.bind(this, 'bottom'),
-	                                    className: 'fishtext__workflow-content-canvas-bottom' },
+	                                    className: 'fishtext__workflow-content-canvas-bottom', __self: this
+	                                },
 	                                React.createElement(
 	                                    'div',
-	                                    { className: 'fishtext__workflow-content-canvas-bottom-lines' },
-	                                    React.createElement('div', { className: 'fishtext__workflow-content-canvas-bottom-lines-line' }),
-	                                    React.createElement('div', { className: 'fishtext__workflow-content-canvas-bottom-lines-line' }),
-	                                    React.createElement('div', { className: 'fishtext__workflow-content-canvas-bottom-lines-line' })
+	                                    { className: 'fishtext__workflow-content-canvas-bottom-lines', __self: this
+	                                    },
+	                                    React.createElement('div', { className: 'fishtext__workflow-content-canvas-bottom-lines-line', __self: this
+	                                    }),
+	                                    React.createElement('div', { className: 'fishtext__workflow-content-canvas-bottom-lines-line', __self: this
+	                                    }),
+	                                    React.createElement('div', { className: 'fishtext__workflow-content-canvas-bottom-lines-line', __self: this
+	                                    })
 	                                )
 	                            ),
 	                            React.createElement(
 	                                'div',
-	                                { className: 'fishtext__workflow-content-canvas-text' },
+	                                { className: 'fishtext__workflow-content-canvas-text', __self: this
+	                                },
 	                                React.createElement(
 	                                    'div',
 	                                    { style: textStyle,
-	                                        className: 'fishtext__workflow-content-canvas-text-block' },
+	                                        className: 'fishtext__workflow-content-canvas-text-block', __self: this
+	                                    },
 	                                    textParams.text
 	                                )
 	                            )
@@ -21051,14 +21106,17 @@
 	                ),
 	                React.createElement(
 	                    'div',
-	                    { className: 'fishtext__footer' },
+	                    { className: 'fishtext__footer', __self: this
+	                    },
 	                    React.createElement(
 	                        'button',
 	                        { onClick: this.onClickButton.bind(this, textParams.text),
-	                            className: 'fishtext__footer-button' },
+	                            className: 'fishtext__footer-button', __self: this
+	                        },
 	                        React.createElement(
 	                            'span',
-	                            { className: 'fishtext__footer-button-text' },
+	                            { className: 'fishtext__footer-button-text', __self: this
+	                            },
 	                            'Скопировать'
 	                        )
 	                    )

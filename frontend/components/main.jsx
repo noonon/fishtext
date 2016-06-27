@@ -183,8 +183,6 @@ module.exports = React => {
                 if (ajax.status === 200 && ajax.readyState == 4) {
                     var data = JSON.parse(ajax.responseText);
 
-                    data.textLength = data.text.length;
-
                     this.setState(data)
                 }
             }.bind(this);
@@ -192,6 +190,8 @@ module.exports = React => {
         },
 
         render: function () {
+
+            console.log(this.state.text);
 
             var textParams = this.getText(this.state.text),
                 contentWidth = `${textParams.width}px`,
